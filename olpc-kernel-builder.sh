@@ -45,8 +45,8 @@ for config in $build_configs; do
 		echo "Already built kernel $git_head"
 	else
 		# Do build
-		make RPMSDIR="$rpm_outdir" BUILDDIR="$builddir" clean distclean
-		if make RPMSDIR="$rpm_outdir" BUILDDIR="$builddir" $target; then
+		make SRPMSDIR="$rpm_outdir" RPMSDIR="$rpm_outdir" BUILDDIR="$builddir" clean distclean
+		if make SRPMSDIR="$rpm_outdir" RPMSDIR="$rpm_outdir" BUILDDIR="$builddir" $target; then
 			echo $git_head > $tgtdir/lastbuild
 		else
 			echo "Failed to build $branch $target" >&2
