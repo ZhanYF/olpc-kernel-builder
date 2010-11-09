@@ -55,7 +55,7 @@ for config in $build_configs; do
 	fi
 
 	# Clean up old builds
-	ls -d --sort=time -r $tgtdir/build-* | tail -n +10 | xargs --no-run-if-empty rm -rf
+	ls -d --sort=time $tgtdir/build-* | tail -n +10 | xargs --no-run-if-empty rm -rf
 
 	# Send all recent builds to be synced
 	repopath=$syncdir/$reponame
