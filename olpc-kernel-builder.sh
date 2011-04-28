@@ -60,7 +60,7 @@ for config in $build_configs; do
 	# Send all recent builds to be synced
 	repopath=$syncdir/$reponame
 	mkdir -p $repopath
-	ln $tgtdir/build-*/*/* $repopath
+	ln $tgtdir/build-*/*/* $tgtdir/build-*/*.src.rpm $repopath
 done
 
 # do sync
