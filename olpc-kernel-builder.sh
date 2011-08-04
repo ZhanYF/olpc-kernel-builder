@@ -6,14 +6,26 @@
 # FIXME: chris wants access to build dirs after builds are done, for ease
 # of making small changes and compiling new kernels
 set -e
+basedir="$HOME/kernels"
+git_clone="$basedir/olpc-2.6"
+rpm_basedir="$basedir/rpms-out"
+syncdir="$basedir/rpms-sync"
+builddir="$basedir/rpm-build"
+ssh_dest="kernels@dev.laptop.org"
+
+if [ $# -lt 1 ]; then
+	echo "1 parameter required: config file"
+	exit 1
+fi
+
+. $1
+
+if [ -z "$build_configs" ]; then
+	echo "build_configs must be defined in config file"
+	exit 1
+fi
+
 set -x
-git_clone="/home/cjb/kernels/olpc-2.6"
-rpm_basedir="/home/cjb/kernels/rpms-out"
-syncdir="/home/cjb/kernels/rpms-sync"
-builddir="/home/cjb/kernels/rpm-build"
-
-build_configs="olpc-2.6.35,xo_1-kernel-rpm,f14-xo1 olpc-2.6.35,xo_1_5-kernel-rpm,f14-xo1.5"
-
 datestamp=$(date +%Y%m%d%H%M%S)
 
 # Make a tree to sync
@@ -64,11 +76,9 @@ for config in $build_configs; do
 done
 
 # do sync
-KEY="-i /home/cjb/.ssh/id_rsa_kernels"
-REMOTE="kernels@dev.laptop.org"
 for repo in $syncdir/*; do
 	repo_bname=$(basename $repo)
 	# FIXME add --delete-after when moved to ~kernels (i.e. no other rpm
 	# packages other than kernels live in public_rpms)
-	rsync -e "ssh $KEY" --delay-updates -av $repo/ $REMOTE:public_rpms/$repo_bname
+	rsync -e "ssh $ssh_args" --delay-updates -av $repo/ $ssh_dest:public_rpms/$repo_bname
 done
