@@ -7,7 +7,7 @@
 # of making small changes and compiling new kernels
 set -e
 basedir="$HOME/kernels"
-git_clone="$basedir/olpc-2.6"
+git_clone="$basedir/olpc-kernel"
 rpm_basedir="$basedir/rpms-out"
 syncdir="$basedir/rpms-sync"
 builddir="$basedir/rpm-build"
