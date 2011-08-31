@@ -10,7 +10,7 @@ basedir="$HOME/kernels"
 git_clone="$basedir/olpc-kernel"
 rpm_basedir="$basedir/rpms-out"
 syncdir="$basedir/rpms-sync"
-builddir="$basedir/rpm-build"
+export builddir="$basedir/rpm-build"
 ssh_dest="kernels@dev.laptop.org"
 
 if [ $# -lt 1 ]; then
@@ -47,7 +47,7 @@ for config in $build_configs; do
 	echo "Building $branch $target into $reponame"
 
 	tgtdir=$rpm_basedir/$branch/$target
-	rpm_outdir=$tgtdir/build-$datestamp
+	export rpm_outdir=$tgtdir/build-$datestamp
 	rm -rf $rpm_outdir
 	mkdir -p $rpm_outdir
 	git checkout remotes/origin/$branch
@@ -57,8 +57,19 @@ for config in $build_configs; do
 		echo "Already built kernel $git_head"
 	else
 		# Do build
-		make SRPMSDIR="$rpm_outdir" RPMSDIR="$rpm_outdir" BUILDDIR="$builddir" clean distclean
-		if make SRPMSDIR="$rpm_outdir" RPMSDIR="$rpm_outdir" BUILDDIR="$builddir" $target; then
+		if [ -x olpc/buildrpm ]; then
+			rm -rf $builddir
+			mkdir -p $builddir
+			./olpc/buildrpm $target
+			retcode=$?
+		else
+			# Legacy build from Makefile, likely to hit issues in #10994
+			make SRPMSDIR="$rpm_outdir" RPMSDIR="$rpm_outdir" BUILDDIR="$builddir" clean distclean
+			make SRPMSDIR="$rpm_outdir" RPMSDIR="$rpm_outdir" BUILDDIR="$builddir" $target
+			retcode=$?
+		fi
+
+		if [ $retcode = 0 ]; then
 			echo $git_head > $tgtdir/lastbuild
 		else
 			echo "Failed to build $branch $target" >&2
