@@ -47,9 +47,6 @@ for config in $build_configs; do
 	echo "Building $branch $target into $reponame"
 
 	tgtdir=$rpm_basedir/$branch/$target
-	export rpm_outdir=$tgtdir/build-$datestamp
-	rm -rf $rpm_outdir
-	mkdir -p $rpm_outdir
 	git checkout remotes/origin/$branch
 	git_head=$(git log -1 --format=%H)
 	[ -e $tgtdir/lastbuild ] && last_git_head=$(<$tgtdir/lastbuild)
@@ -57,6 +54,11 @@ for config in $build_configs; do
 		echo "Already built kernel $git_head"
 	else
 		# Do build
+
+		export rpm_outdir=$tgtdir/build-$datestamp
+		rm -rf $rpm_outdir
+		mkdir -p $rpm_outdir
+
 		if [ -x olpc/buildrpm ]; then
 			rm -rf $builddir
 			mkdir -p $builddir
