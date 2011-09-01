@@ -3,7 +3,7 @@ mydir=$(dirname $0)
 lock=/var/tmp/kernelbuilder.$(whoami)
 
 (
-	if ! flock 200; then
+	if ! flock -n 200; then
 		echo "instance already running, aborting..." >&2
 		exit 1
 	fi
