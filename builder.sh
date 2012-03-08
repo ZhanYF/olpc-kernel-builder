@@ -49,6 +49,7 @@ for config in $build_configs; do
 	tgtdir=$rpm_basedir/$branch/$target
 	git checkout remotes/origin/$branch
 	git_head=$(git log -1 --format=%H)
+	last_git_head=
 	[ -e $tgtdir/lastbuild ] && last_git_head=$(<$tgtdir/lastbuild)
 	if [[ $git_head == $last_git_head ]]; then
 		echo "Already built kernel $git_head"
