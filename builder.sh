@@ -60,17 +60,10 @@ for config in $build_configs; do
 		rm -rf $rpm_outdir
 		mkdir -p $rpm_outdir
 
-		if [ -x olpc/buildrpm ]; then
-			rm -rf $builddir
-			mkdir -p $builddir
-			./olpc/buildrpm $target
-			retcode=$?
-		else
-			# Legacy build from Makefile, likely to hit issues in #10994
-			make SRPMSDIR="$rpm_outdir" RPMSDIR="$rpm_outdir" BUILDDIR="$builddir" clean distclean
-			make SRPMSDIR="$rpm_outdir" RPMSDIR="$rpm_outdir" BUILDDIR="$builddir" $target
-			retcode=$?
-		fi
+		rm -rf $builddir
+		mkdir -p $builddir
+		./olpc/buildrpm $target
+		retcode=$?
 
 		if [ $retcode = 0 ]; then
 			echo $git_head > $tgtdir/lastbuild
