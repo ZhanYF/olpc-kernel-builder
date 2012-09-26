@@ -43,6 +43,13 @@ for config in $build_configs; do
 	branch=$1
 	target=$2
 	reponame=$3
+	mocktarget=$4
+
+	if [ -n "$mocktarget" ]; then
+		mockargs="-m $mocktarget"
+	else
+		mockargs=
+	fi
 
 	echo "Building $branch $target into $reponame"
 
@@ -62,7 +69,7 @@ for config in $build_configs; do
 
 		rm -rf $builddir
 		mkdir -p $builddir
-		./olpc/buildrpm $target
+		./olpc/buildrpm $mockargs $target
 		retcode=$?
 
 		if [ $retcode = 0 ]; then
@@ -79,7 +86,7 @@ for config in $build_configs; do
 	# Send all recent builds to be synced
 	repopath=$syncdir/$reponame
 	mkdir -p $repopath
-	ln $tgtdir/build-*/*/* $tgtdir/build-*/*.src.rpm $repopath
+	ln $tgtdir/build-*/*/*.rpm $tgtdir/build-*/*.rpm $repopath
 done
 
 # do sync
