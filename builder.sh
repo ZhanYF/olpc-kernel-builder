@@ -6,6 +6,7 @@
 # FIXME: chris wants access to build dirs after builds are done, for ease
 # of making small changes and compiling new kernels
 set -e
+shopt -s nullglob
 basedir="$HOME/kernels"
 git_clone="$basedir/olpc-kernel"
 rpm_basedir="$basedir/rpms-out"
