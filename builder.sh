@@ -55,15 +55,14 @@ for config in $build_configs; do
 	echo "Building $branch $target into $reponame"
 
 	tgtdir=$rpm_basedir/$branch/$target
-	git checkout remotes/origin/$branch
-	git_head=$(git log -1 --format=%H)
+	git_head=$(git log -1 --format=%H remotes/origin/$branch)
 	last_git_head=
 	[ -e $tgtdir/lastbuild ] && last_git_head=$(<$tgtdir/lastbuild)
 	if [[ $git_head == $last_git_head ]]; then
 		echo "Already built kernel $git_head"
 	else
 		# Do build
-
+		git checkout remotes/origin/$branch
 		export rpm_outdir=$tgtdir/build-$datestamp
 		rm -rf $rpm_outdir
 		mkdir -p $rpm_outdir
